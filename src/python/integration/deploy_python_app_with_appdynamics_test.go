@@ -1,20 +1,20 @@
 package integration_test
 
 import (
-	"time"
-
-	"github.com/cloudfoundry/libbuildpack/cutlass"
-
 	"encoding/json"
 	"fmt"
+	"time"
 
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/cloudfoundry/libbuildpack/cutlass"
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("appdynamics", func() {
 	var (
-		app, serviceBrokerApp                          *cutlass.App
+		app, serviceBrokerApp                          *cutlass7.App
 		serviceBrokerURL, serviceName, serviceOffering string
 	)
 
@@ -26,7 +26,7 @@ var _ = Describe("appdynamics", func() {
 		serviceOffering = "appdynamics-" + cutlass.RandStringRunes(20)
 		serviceName = "appdynamics-" + cutlass.RandStringRunes(20)
 
-		serviceBrokerApp = cutlass.New(Fixtures("fake_appd_service_broker"))
+		serviceBrokerApp = cutlass7.New(Fixtures("fake_appd_service_broker"))
 		serviceBrokerApp.SetEnv("OFFERING_NAME", serviceOffering)
 		Expect(serviceBrokerApp.Push()).To(Succeed())
 		Eventually(func() ([]string, error) { return serviceBrokerApp.InstanceStates() }, 20*time.Second).Should(Equal([]string{"RUNNING"}))
@@ -38,7 +38,7 @@ var _ = Describe("appdynamics", func() {
 		Expect(RunCf("create-service-broker", serviceBrokerApp.Name, "username", "password", serviceBrokerURL, "--space-scoped")).To(Succeed())
 		Expect(RunCf("create-service", serviceOffering, "public", serviceName)).To(Succeed())
 
-		app = cutlass.New(Fixtures("with_appdynamics"))
+		app = cutlass7.New(Fixtures("with_appdynamics"))
 		app.Disk = "1G"
 		app.SetEnv("BP_DEBUG", "true")
 		PushAppAndConfirm(app)

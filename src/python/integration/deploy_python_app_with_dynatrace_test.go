@@ -6,17 +6,18 @@ import (
 	"path/filepath"
 	"time"
 
-	"github.com/cloudfoundry/libbuildpack/cutlass"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/cloudfoundry/libbuildpack/cutlass"
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("CF Python Buildpack", func() {
 	var (
-		app             *cutlass.App
+		app             *cutlass7.App
 		createdServices []string
-		dynatraceAPI    *cutlass.App
+		dynatraceAPI    *cutlass7.App
 		dynatraceAPIURI string
 	)
 
@@ -25,7 +26,7 @@ var _ = Describe("CF Python Buildpack", func() {
 			Skip("Skipping parallel tests")
 		}
 
-		dynatraceAPI = cutlass.New(Fixtures("fake_dynatrace_api"))
+		dynatraceAPI = cutlass7.New(Fixtures("fake_dynatrace_api"))
 		dynatraceAPI.SetEnv("BP_DEBUG", "true")
 
 		Expect(dynatraceAPI.Push()).To(Succeed())
@@ -35,8 +36,8 @@ var _ = Describe("CF Python Buildpack", func() {
 		dynatraceAPIURI, err = dynatraceAPI.GetUrl("")
 		Expect(err).NotTo(HaveOccurred())
 
-		//app = cutlass.New(Fixtures("flask"))
-		app = cutlass.New(filepath.Join(bpDir, "fixtures", "flask"))
+		//app = cutlass7.New(Fixtures("flask"))
+		app = cutlass7.New(filepath.Join(bpDir, "fixtures", "flask"))
 		app.SetEnv("BP_DEBUG", "true")
 		PushAppAndConfirm(app)
 

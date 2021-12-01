@@ -9,12 +9,13 @@ import (
 	"testing"
 	"time"
 
+	. "github.com/onsi/ginkgo"
+	. "github.com/onsi/gomega"
+
 	"github.com/cloudfoundry/libbuildpack"
 	"github.com/cloudfoundry/libbuildpack/bratshelper"
 	"github.com/cloudfoundry/libbuildpack/cutlass"
-
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = func() bool {
@@ -55,7 +56,7 @@ func TestBrats(t *testing.T) {
 	RunSpecs(t, "Brats Suite")
 }
 
-func CopyBrats(version string) *cutlass.App {
+func CopyBrats(version string) *cutlass7.App {
 	dir, err := cutlass.CopyFixture(filepath.Join(bratshelper.Data.BpDir, "fixtures", "brats"))
 	Expect(err).ToNot(HaveOccurred())
 
@@ -70,10 +71,10 @@ func CopyBrats(version string) *cutlass.App {
 	data := "python-" + version
 	Expect(ioutil.WriteFile(filepath.Join(dir, "runtime.txt"), []byte(data), 0644)).To(Succeed())
 
-	return cutlass.New(dir)
+	return cutlass7.New(dir)
 }
 
-func PushApp(app *cutlass.App) {
+func PushApp(app *cutlass7.App) {
 	Expect(app.Push()).To(Succeed())
 	Eventually(app.InstanceStates, 20*time.Second).Should(Equal([]string{"RUNNING"}))
 }

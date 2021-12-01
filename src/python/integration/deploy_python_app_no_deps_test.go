@@ -1,13 +1,14 @@
 package integration_test
 
 import (
-	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("deploying a web app without dependencies", func() {
-	var app *cutlass.App
+	var app *cutlass7.App
 
 	BeforeEach(func() {
 		if isSerialTest {
@@ -26,7 +27,7 @@ var _ = Describe("deploying a web app without dependencies", func() {
 
 	Context("no requirements.txt or setup.py", func() {
 		BeforeEach(func() {
-			app = cutlass.New(Fixtures("no_deps"))
+			app = cutlass7.New(Fixtures("no_deps"))
 			app.Buildpacks = []string{"python_buildpack"}
 			app.SetEnv("BP_DEBUG", "1")
 		})
@@ -40,7 +41,7 @@ var _ = Describe("deploying a web app without dependencies", func() {
 
 	Context("with setup.py but not requirements.txt", func() {
 		BeforeEach(func() {
-			app = cutlass.New(Fixtures("setup_py"))
+			app = cutlass7.New(Fixtures("setup_py"))
 			app.Buildpacks = []string{"python_buildpack"}
 			app.SetEnv("BP_DEBUG", "1")
 		})

@@ -152,11 +152,11 @@ function util::tools::cf::install() {
   if [[ ! -f "${dir}/cf" ]]; then
     util::print::title "Installing cf"
 
-    curl "https://packages.cloudfoundry.org/stable?release=${os}-binary&version=6.53.0&source=github-rel" \
+    curl "https://packages.cloudfoundry.org/stable?release=${os}-binary&version=7.4.0&source=github-rel" \
       --silent \
       --location \
       --output /tmp/cf.tar.gz
-    tar -xzf /tmp/cf.tar.gz -C "${dir}" cf
+    tar -xzf /tmp/cf.tar.gz -C "${dir}" cf cf7
     rm /tmp/cf.tar.gz
   fi
 }

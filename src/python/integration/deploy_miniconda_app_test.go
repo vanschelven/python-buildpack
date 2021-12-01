@@ -7,13 +7,15 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/cloudfoundry/libbuildpack/cutlass"
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("CF Python Buildpack", func() {
-	var app *cutlass.App
+	var app *cutlass7.App
 	var fixtureDir string
 
 	BeforeEach(func() {
@@ -24,7 +26,7 @@ var _ = Describe("CF Python Buildpack", func() {
 		var err error
 		fixtureDir, err = cutlass.CopyFixture(Fixtures("miniconda_python_3"))
 		Expect(err).ToNot(HaveOccurred())
-		app = cutlass.New(fixtureDir)
+		app = cutlass7.New(fixtureDir)
 		app.Buildpacks = []string{"python_buildpack"}
 		app.Disk = "2G"
 		app.Memory = "1G"
@@ -34,7 +36,7 @@ var _ = Describe("CF Python Buildpack", func() {
 		Expect(os.RemoveAll(fixtureDir)).To(Succeed())
 
 		if app != nil {
-			//Expect(app.Destroy()).To(Succeed())  // TODO: FOR DEBUG -- UNCOMMENT AFTER DEBUGGING!
+			Expect(app.Destroy()).To(Succeed())
 		}
 		app = nil
 

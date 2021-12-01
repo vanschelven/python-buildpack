@@ -1,13 +1,14 @@
 package integration_test
 
 import (
-	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("download transitive dependencies correctly", func() {
-	var app *cutlass.App
+	var app *cutlass7.App
 
 	BeforeEach(func() {
 		if isSerialTest {
@@ -24,7 +25,7 @@ var _ = Describe("download transitive dependencies correctly", func() {
 
 	Context("find-links is set for transitive dependencies", func() {
 		BeforeEach(func() {
-			app = cutlass.New(Fixtures("vendored_transitive_dependencies"))
+			app = cutlass7.New(Fixtures("vendored_transitive_dependencies"))
 			app.SetEnv("BP_DEBUG", "1")
 		})
 

@@ -9,20 +9,19 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"testing"
 	"time"
 
 	"github.com/cloudfoundry/libbuildpack/cutlass"
-
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
-
-	"testing"
 )
 
 var bpDir string
 var buildpackVersion string
 var isSerialTest bool
-var packagedBuildpack cutlass.VersionedBuildpackPackage
+var packagedBuildpack cutlass7.VersionedBuildpackPackage
 var token string
 var platform string
 
@@ -45,7 +44,7 @@ func init() {
 var _ = SynchronizedBeforeSuite(func() []byte {
 	// Run once
 	if buildpackVersion == "" {
-		packagedBuildpack, err := cutlass.PackageUniquelyVersionedBuildpack(os.Getenv("CF_STACK"), ApiHasStackAssociation())
+		packagedBuildpack, err := cutlass7.PackageUniquelyVersionedBuildpack(os.Getenv("CF_STACK"), ApiHasStackAssociation())
 		Expect(err).NotTo(HaveOccurred())
 
 		data, err := json.Marshal(packagedBuildpack)
@@ -63,11 +62,11 @@ var _ = SynchronizedBeforeSuite(func() []byte {
 		buildpackVersion = packagedBuildpack.Version
 	}
 
-	bpDir, err = cutlass.FindRoot()
+	bpDir, err = cutlass7.FindRoot()
 	Expect(err).NotTo(HaveOccurred())
 
-	Expect(cutlass.CopyCfHome()).To(Succeed())
-	cutlass.SeedRandom()
+	Expect(cutlass7.CopyCfHome()).To(Succeed())
+	cutlass7.SeedRandom()
 	cutlass.DefaultStdoutStderr = GinkgoWriter
 
 	SetDefaultEventuallyTimeout(10 * time.Second)
@@ -77,8 +76,8 @@ var _ = SynchronizedAfterSuite(func() {
 	// Run on all nodes
 }, func() {
 	// Run once
-	Expect(cutlass.RemovePackagedBuildpack(packagedBuildpack)).To(Succeed())
-	Expect(cutlass.DeleteOrphanedRoutes()).To(Succeed())
+	Expect(cutlass7.RemovePackagedBuildpack(packagedBuildpack)).To(Succeed())
+	Expect(cutlass7.DeleteOrphanedRoutes()).To(Succeed())
 })
 
 func TestIntegration(t *testing.T) {
@@ -86,37 +85,37 @@ func TestIntegration(t *testing.T) {
 	RunSpecs(t, "Integration Suite")
 }
 
-func PushAppAndConfirm(app *cutlass.App) {
+func PushAppAndConfirm(app *cutlass7.App) {
 	Expect(app.Push()).To(Succeed())
 	Eventually(func() ([]string, error) { return app.InstanceStates() }, 20*time.Second).Should(Equal([]string{"RUNNING"}))
 	Expect(app.ConfirmBuildpack(buildpackVersion)).To(Succeed())
 }
 
-func Restart(app *cutlass.App) {
+func Restart(app *cutlass7.App) {
 	Expect(app.Restart()).To(Succeed())
 	Eventually(func() ([]string, error) { return app.InstanceStates() }, 20*time.Second).Should(Equal([]string{"RUNNING"}))
 }
 
 func ApiHasTask() bool {
-	supported, err := cutlass.ApiGreaterThan("2.75.0")
+	supported, err := cutlass7.ApiGreaterThan("2.75.0")
 	Expect(err).NotTo(HaveOccurred())
 	return supported
 }
 
 func ApiHasMultiBuildpack() bool {
-	supported, err := cutlass.ApiGreaterThan("2.90.0")
+	supported, err := cutlass7.ApiGreaterThan("2.90.0")
 	Expect(err).NotTo(HaveOccurred())
 	return supported
 }
 
 func ApiHasStackAssociation() bool {
-	supported, err := cutlass.ApiGreaterThan("2.113.0")
+	supported, err := cutlass7.ApiGreaterThan("2.113.0")
 	Expect(err).NotTo(HaveOccurred())
 	return supported
 }
 
 func Fixtures(names ...string) string {
-	root, err := cutlass.FindRoot()
+	root, err := cutlass7.FindRoot()
 	Expect(err).NotTo(HaveOccurred())
 
 	names = append([]string{root, "fixtures"}, names...)

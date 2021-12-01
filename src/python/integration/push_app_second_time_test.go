@@ -1,14 +1,15 @@
 package integration_test
 
 import (
-	"github.com/cloudfoundry/libbuildpack/cutlass"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/cloudfoundry/libbuildpack/cutlass"
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("pushing an app a second time", func() {
-	var app *cutlass.App
+	var app *cutlass7.App
 
 	BeforeEach(func() {
 		if cutlass.Cached {
@@ -19,7 +20,7 @@ var _ = Describe("pushing an app a second time", func() {
 			Skip("Skipping parallel tests")
 		}
 
-		app = cutlass.New(Fixtures("no_deps"))
+		app = cutlass7.New(Fixtures("no_deps"))
 		app.Buildpacks = []string{"python_buildpack"}
 	})
 

@@ -1,14 +1,15 @@
 package integration_test
 
 import (
-	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("deploying a flask web app", func() {
 
-	var app *cutlass.App
+	var app *cutlass7.App
 
 	BeforeEach(func() {
 		if isSerialTest {
@@ -25,7 +26,7 @@ var _ = Describe("deploying a flask web app", func() {
 
 	Context("start command is specified in manifest.yml", func() {
 		BeforeEach(func() {
-			app = cutlass.New(Fixtures("flask_no_procfile"))
+			app = cutlass7.New(Fixtures("flask_no_procfile"))
 		})
 
 		It("deploys", func() {

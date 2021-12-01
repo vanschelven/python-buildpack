@@ -3,14 +3,15 @@ package integration_test
 import (
 	"os/exec"
 
-	"github.com/cloudfoundry/libbuildpack/cutlass"
-
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+
+	"github.com/cloudfoundry/libbuildpack/cutlass"
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("override yml", func() {
-	var app *cutlass.App
+	var app *cutlass7.App
 	var buildpackName string
 
 	BeforeEach(func() {
@@ -25,7 +26,7 @@ var _ = Describe("override yml", func() {
 		buildpackName = "override_yml_" + cutlass.RandStringRunes(5)
 		Expect(cutlass.CreateOrUpdateBuildpack(buildpackName, Fixtures("overrideyml_bp"), "")).To(Succeed())
 
-		app = cutlass.New(Fixtures("no_deps"))
+		app = cutlass7.New(Fixtures("no_deps"))
 		app.Buildpacks = []string{buildpackName + "_buildpack", "python_buildpack"}
 	})
 

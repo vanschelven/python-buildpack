@@ -1,11 +1,12 @@
 package brats_test
 
 import (
-	"github.com/cloudfoundry/libbuildpack/bratshelper"
-	"github.com/cloudfoundry/libbuildpack/cutlass"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"golang.org/x/crypto/bcrypt"
+
+	"github.com/cloudfoundry/libbuildpack/bratshelper"
+	cutlass7 "github.com/cloudfoundry/libbuildpack/cutlass/v7"
 )
 
 var _ = Describe("Python buildpack", func() {
@@ -17,7 +18,7 @@ var _ = Describe("Python buildpack", func() {
 	bratshelper.DeployAppWithExecutableProfileScript("python", CopyBrats)
 	bratshelper.DeployAnAppWithSensitiveEnvironmentVariables(CopyBrats)
 
-	bratshelper.ForAllSupportedVersions("python", CopyBrats, func(pythonVersion string, app *cutlass.App) {
+	bratshelper.ForAllSupportedVersions("python", CopyBrats, func(pythonVersion string, app *cutlass7.App) {
 		PushApp(app)
 
 		By("runs a simple webserver", func() {
